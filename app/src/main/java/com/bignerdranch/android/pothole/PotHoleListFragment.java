@@ -1,5 +1,7 @@
 package com.bignerdranch.android.pothole;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,12 +9,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PotHoleListFragment extends Fragment{
     private RecyclerView mPotHoleRecycleView;
     private PotHoleAdapter mAdapter;
+    private List<PotHole> mItems = new ArrayList<>();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        new FetchItemsTask().execute();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
@@ -32,6 +45,12 @@ public class PotHoleListFragment extends Fragment{
         updateUI();
     }
 
+    private void setupAdapter(){
+        if(isAdded()) {
+            mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
+        }
+    }
+
     private class PotHoleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mUid;
         private TextView mLocation;
@@ -49,7 +68,8 @@ public class PotHoleListFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
-            // start the detail view activity ehre
+            Intent intent = SubmitPotHoleActivity.newIntent(getActivity(), mPotHole.getId());
+            startActivity(intent);
         }
 
         public void bindPotHole(PotHole pothole){
@@ -84,6 +104,19 @@ public class PotHoleListFragment extends Fragment{
         @Override
         public int getItemCount() {
             return mPotHoles.size();
+        }
+    }
+
+    private class FetchItemsTask extends AsyncTask<Void,Void,List<PotHole>>{
+
+        @Override
+        protected List<PotHole> doInBackground(Void... params) {
+            return new PotHoleFetcher().fetchItems();
+        }
+
+        @Override
+        protected void onPostExecute(List<PotHole> items){
+            mItems = items;
         }
     }
 

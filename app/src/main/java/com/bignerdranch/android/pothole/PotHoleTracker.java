@@ -25,7 +25,7 @@ public class PotHoleTracker {
             PotHole potHole = new PotHole();
             potHole.setId("User Id: " + i);
             potHole.setDate(mDate);
-            potHole.setLocation("Latitude: 38 | Longitude: 48");
+            potHole.setLocation("Lat: 38 | Long: 48");
             mPotHoles.add(potHole);
         }
     }
