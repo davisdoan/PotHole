@@ -9,12 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PotHoleListFragment extends Fragment{
     private RecyclerView mPotHoleRecycleView;
+    private Button mNewReportButton;
     private PotHoleAdapter mAdapter;
     private List<PotHole> mItems = new ArrayList<>();
 
@@ -22,6 +24,7 @@ public class PotHoleListFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
         new FetchItemsTask().execute();
     }
 
@@ -30,6 +33,15 @@ public class PotHoleListFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_pothole_list, container, false);
         mPotHoleRecycleView = (RecyclerView) view.findViewById(R.id.pothole_recyler_view);
         mPotHoleRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mNewReportButton = (Button)view.findViewById(R.id.new_report_button);
+
+        mNewReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent reportIntent = new Intent(getActivity(), SubmitPotHoleActivity.class);
+                startActivity(reportIntent);
+            }
+        });
 
         //UI();
         return view;
@@ -67,8 +79,12 @@ public class PotHoleListFragment extends Fragment{
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), PotHoleDetails.class);
-            //intent.putExtra("");
-            // pass pothole as extra
+            intent.putExtra("id", mPotHole.getId());
+            intent.putExtra("latitude", mPotHole.getLatitute());
+            intent.putExtra("longitude", mPotHole.getLatitute());
+            intent.putExtra("description", mPotHole.getDescription());
+            intent.putExtra("date",mPotHole.getDate());
+
             startActivity(intent);
         }
 

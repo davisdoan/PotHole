@@ -2,8 +2,9 @@
     <string name="app_name">PotHole</string>
     <string name="pothole_title_description">Description</string>
     <string name="pothole_title_description_hint">Enter in a description.</string>
-    <string name="pothole_title_id">Submitted by: </string>
-    <string name="pothole_title_latitute">Latitude: </string>
-    <string name="pothole_title_longitute">Longitude: </string>
-    <string name="pothole_title_date">Date: </string>
+    <string name="pothole_title_id">Submitted by:  </string>
+    <string name="pothole_title_latitude">Latitude:  </string>
+    <string name="pothole_title_longitude">Longitude:  </string>
+    <string name="pothole_title_date">Date:  </string>
+    <string name="pothole_submit_new">Submit New Report</string>
 </resources>

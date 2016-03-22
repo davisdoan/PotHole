@@ -22,31 +22,44 @@
 
                    android:layout_marginLeft="35dp"/>
         <TextView
+            android:id="@+id/detail_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_id"
             style="?android:listSeparatorTextViewStyle"
             android:layout_marginLeft="25dp"/>
+
         <TextView
+            android:id="@+id/detail_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/pothole_title_longitute"
-            style="?android:listSeparatorTextViewStyle"
-            android:layout_marginLeft="25dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/pothole_title_latitute"
+            android:text="@string/pothole_title_date"
             style="?android:listSeparatorTextViewStyle"
             android:layout_marginLeft="25dp"/>
 
         <TextView
+            android:id="@+id/detail_longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pothole_title_longitude"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_marginLeft="25dp"/>
+        <TextView
+            android:id="@+id/detail_latitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pothole_title_latitude"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_marginLeft="25dp"/>
+
+        <TextView
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_description"
             style="?android:listSeparatorTextViewStyle"
             android:layout_marginLeft="25dp"/>
-        <EditText android:id="@+id/pothole_title"
+        <EditText android:id="@+id/detail_description"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginRight="16dp"
