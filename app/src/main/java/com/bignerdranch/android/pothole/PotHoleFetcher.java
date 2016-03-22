@@ -2,8 +2,6 @@ package com.bignerdranch.android.pothole;
 
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,8 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import android.widget.Toast;
-
 
 public class PotHoleFetcher {
 
@@ -46,6 +42,30 @@ public class PotHoleFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
+    private void parseItems(List<PotHole> items, JSONArray jsonBody) throws IOException, JSONException {
+        for(int i = 0; i < jsonBody.length(); i++){
+            JSONObject myJson = jsonBody.getJSONObject(i);
+            String id = myJson.getString("id");
+            String latitude = myJson.getString("latitude");
+            String longitute = myJson.getString("longitude");
+            String description = myJson.getString("description");
+            String date = myJson.getString("created");
+
+            Log.i(TAG,"You have *******: " + id );
+            Log.i(TAG,"You have *******: " + latitude );
+
+            PotHole potholeItem = new PotHole();
+
+            potholeItem.setId(id);
+            potholeItem.setLatitude(latitude);
+            potholeItem.setLongtitute(longitute);
+            potholeItem.setDescription(description);
+            potholeItem.setDate(date);
+
+            items.add(potholeItem);
+        }
+    }
+
     public List<PotHole> fetchItems(){
         List<PotHole> items = new ArrayList<>();
 
@@ -53,7 +73,7 @@ public class PotHoleFetcher {
             String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
                     .buildUpon()
                     .appendQueryParameter("type","street")
-                    .appendQueryParameter("user", "898")
+                    .appendQueryParameter("user", "rew")
                     .appendQueryParameter("size","10")
                     .appendQueryParameter("batch-number","0")
                     .appendQueryParameter("end-id","15")
@@ -70,28 +90,6 @@ public class PotHoleFetcher {
             Log.e(TAG,"Failed to parse JSON", je);
         }
         return items;
-    }
-
-    private void parseItems(List<PotHole> items, JSONArray jsonBody) throws IOException, JSONException {
-
-        for(int i = 0; i < jsonBody.length(); i++){
-
-            JSONObject myJson = jsonBody.getJSONObject(i);
-            String id = myJson.getString("id");
-            String latitude = myJson.getString("latitude");
-            String longitute = myJson.getString("longitude");
-            String description = myJson.getString("description");
-            String date = myJson.getString("created");
-
-            Log.i("PotHole Fragment", "You have *******: " + id );
-
-            PotHole potholeItem = new PotHole();
-            
-            //potholeItem.setDate(date);
-            potholeItem.setId(id);
-
-            items.add(potholeItem);
-        }
     }
 
 }

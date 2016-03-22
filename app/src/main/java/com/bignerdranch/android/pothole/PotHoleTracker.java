@@ -1,15 +1,13 @@
 package com.bignerdranch.android.pothole;
 
 import android.content.Context;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PotHoleTracker {
     private static PotHoleTracker mPotHoleTracker;
     private List<PotHole> mPotHoles;
-    private Date mDate;
+    private String mDate;
 
     public static PotHoleTracker get(Context context){
         if( mPotHoleTracker == null){
@@ -20,12 +18,13 @@ public class PotHoleTracker {
 
     private PotHoleTracker(Context context){
         mPotHoles = new ArrayList<>();
-        mDate = new Date();
+
         for( int i = 0; i < 100; i ++) {
             PotHole potHole = new PotHole();
             potHole.setId("User Id: " + i);
             potHole.setDate(mDate);
-            potHole.setLocation("Lat: 38 | Long: 48");
+            potHole.setLongtitute("47");
+            potHole.setLatitude("68");
             mPotHoles.add(potHole);
         }
     }

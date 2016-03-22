@@ -9,9 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +28,10 @@ public class PotHoleListFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
         View view = inflater.inflate(R.layout.fragment_pothole_list, container, false);
-
         mPotHoleRecycleView = (RecyclerView) view.findViewById(R.id.pothole_recyler_view);
         mPotHoleRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         updateUI();
-
         return view;
     }
 
@@ -69,14 +65,15 @@ public class PotHoleListFragment extends Fragment{
         @Override
         public void onClick(View v) {
             Intent intent = SubmitPotHoleActivity.newIntent(getActivity(), mPotHole.getId());
+            // pass pothole as extra
             startActivity(intent);
         }
 
         public void bindPotHole(PotHole pothole){
             mPotHole = pothole;
             mUid.setText(mPotHole.getId());
-            mLocation.setText(mPotHole.getLocation());
-            mDate.setText(mPotHole.getDate().toString());
+            mLocation.setText(mPotHole.getLatitute());
+            mDate.setText(mPotHole.getDate());
         }
     }
 
@@ -117,9 +114,9 @@ public class PotHoleListFragment extends Fragment{
         @Override
         protected void onPostExecute(List<PotHole> items){
             mItems = items;
+            setupAdapter();
         }
     }
-
 
     private void updateUI(){
         PotHoleTracker potHoleTracker = PotHoleTracker.get(getActivity());
@@ -131,7 +128,6 @@ public class PotHoleListFragment extends Fragment{
         } else {
             mAdapter.notifyDataSetChanged();
         }
-
         mAdapter =  new PotHoleAdapter(potHoles);
         mPotHoleRecycleView.setAdapter(mAdapter);
     }

@@ -1,39 +1,43 @@
 package com.bignerdranch.android.pothole;
 
-import java.util.Date;
-
 public class PotHole {
 
     private String mId;
-    private String mLocation;
-    private Date mDate;
+    private String mLatitude;
+    private String mLongitute;
+    private String mDate;
+    private String mDescription;
 
     public PotHole(){
-        mId = "989";
-        mDate = new Date();
     }
 
-    public String getId() {
-        return mId;
+    public String getId() { return mId;
     }
 
-    public void setId(String id){
-        mId = id;
+    public void setId(String id){ mId = id;
     }
 
-    public String getLocation() {
-        return mLocation;
+    public String getLatitute() { return mLatitude;
     }
 
-    public void setLocation(String location){
-        mLocation = location;
+    public void setLatitude(String latitute) {mLatitude = latitute;
     }
 
-    public Date getDate() {
-        return mDate;
+    public String getLongitute(){ return mLongitute;
     }
 
-    public void setDate(Date date){
-        mDate = date;
+    public void setLongtitute(String longitute) { mLongitute = longitute;
+    }
+
+    public String getDate() { return mDate;
+    }
+
+    public void setDate(String date){ mDate = date;
+    }
+
+    public String getDescription() { return mDescription;
+    }
+
+    public void setDescription(String description) { mDescription = description;
     }
 }
