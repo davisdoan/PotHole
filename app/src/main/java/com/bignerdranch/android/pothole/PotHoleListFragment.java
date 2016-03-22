@@ -31,14 +31,14 @@ public class PotHoleListFragment extends Fragment{
         mPotHoleRecycleView = (RecyclerView) view.findViewById(R.id.pothole_recyler_view);
         mPotHoleRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI();
+        //UI();
         return view;
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        updateUI();
+        //updateUI();
     }
 
     private void setupAdapter(){
@@ -49,7 +49,8 @@ public class PotHoleListFragment extends Fragment{
 
     private class PotHoleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mUid;
-        private TextView mLocation;
+        private TextView mLatitude;
+        private TextView mLongitude;
         private TextView mDate;
         private PotHole mPotHole;
 
@@ -58,22 +59,25 @@ public class PotHoleListFragment extends Fragment{
             itemView.setOnClickListener(this);
 
             mUid = (TextView)itemView.findViewById(R.id.list_item_pothole_userid);
-            mLocation = (TextView) itemView.findViewById(R.id.list_item_posthole_location);
+            mLatitude = (TextView) itemView.findViewById(R.id.list_item_pothole_latitude);
+            mLongitude = (TextView) itemView.findViewById(R.id.list_item_posthole_longitute);
             mDate = (TextView) itemView.findViewById(R.id.list_item_pothole_date);
         }
 
         @Override
         public void onClick(View v) {
-            Intent intent = SubmitPotHoleActivity.newIntent(getActivity(), mPotHole.getId());
+            Intent intent = new Intent(getActivity(), PotHoleDetails.class);
+            //intent.putExtra("");
             // pass pothole as extra
             startActivity(intent);
         }
 
         public void bindPotHole(PotHole pothole){
             mPotHole = pothole;
-            mUid.setText(mPotHole.getId());
-            mLocation.setText(mPotHole.getLatitute());
-            mDate.setText(mPotHole.getDate());
+            mUid.append(mPotHole.getId());
+            mLatitude.append(mPotHole.getLatitute());
+            mLongitude.append(mPotHole.getLongitute());
+            mDate.append(mPotHole.getDate());
         }
     }
 

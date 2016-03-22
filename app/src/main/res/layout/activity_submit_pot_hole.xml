@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.bignerdranch.android.pothole.SubmitPotHoleActivity">
-
-</RelativeLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="16dp"
+              android:layout_marginTop="16dp"
+    >
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginRight="4dp"
+    >
+    <ImageView android:id="@+id/pothole_photo"
+               android:layout_width="80dp"
+               android:layout_height="80dp"
+               android:scaleType="centerInside"
+               android:background="@android:color/darker_gray"
+               android:cropToPadding="true"/>
+    <ImageButton android:id="@+id/pothole_camera"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:src="@android:drawable/ic_menu_camera"
+        />
+</LinearLayout>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pothole_title_description"
+        style="?android:listSeparatorTextViewStyle"
+        />
+    <EditText android:id="@+id/pothole_title"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="16dp"
+              android:hint="@string/pothole_title_description_hint"
+        />
+</LinearLayout>
+</LinearLayout>
