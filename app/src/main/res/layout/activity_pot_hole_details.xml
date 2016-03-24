@@ -3,7 +3,10 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginLeft="16dp"
+              android:layout_marginRight="16dp"
+              android:layout_marginBottom="16dp"
               android:layout_marginTop="16dp"
+
     >
 
     <LinearLayout
@@ -11,6 +14,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
         >
 
         <ImageView android:id="@+id/pothole_photo"
@@ -18,16 +23,14 @@
                    android:layout_height="280dp"
                    android:scaleType="centerInside"
                    android:background="@android:color/darker_gray"
-                   android:cropToPadding="true"
-
-                   android:layout_marginLeft="35dp"/>
+                   android:cropToPadding="true"/>
         <TextView
             android:id="@+id/detail_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_id"
             style="?android:listSeparatorTextViewStyle"
-            android:layout_marginLeft="25dp"/>
+            />
 
         <TextView
             android:id="@+id/detail_date"
@@ -35,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_date"
             style="?android:listSeparatorTextViewStyle"
-            android:layout_marginLeft="25dp"/>
+            />
 
         <TextView
             android:id="@+id/detail_longitude"
@@ -43,28 +46,28 @@
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_longitude"
             style="?android:listSeparatorTextViewStyle"
-            android:layout_marginLeft="25dp"/>
+            />
         <TextView
             android:id="@+id/detail_latitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_latitude"
             style="?android:listSeparatorTextViewStyle"
-            android:layout_marginLeft="25dp"/>
+            />
 
         <TextView
-
+            android:id="@+id/detail_description_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/pothole_title_description"
             style="?android:listSeparatorTextViewStyle"
-            android:layout_marginLeft="25dp"/>
+            />
+
         <EditText android:id="@+id/detail_description"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginRight="16dp"
                   android:hint="@string/pothole_title_description_hint"
-                  android:layout_marginLeft="25dp"/>
+                  />
 
     </LinearLayout>
 </LinearLayout>

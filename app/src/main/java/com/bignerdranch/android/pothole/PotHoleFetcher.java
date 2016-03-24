@@ -47,7 +47,7 @@ public class PotHoleFetcher {
             JSONObject myJson = jsonBody.getJSONObject(i);
             String id = myJson.getString("id");
             String latitude = myJson.getString("latitude");
-            String longitute = myJson.getString("longitude");
+            String longitude = myJson.getString("longitude");
             String description = myJson.getString("description");
             String date = myJson.getString("created");
 
@@ -58,7 +58,7 @@ public class PotHoleFetcher {
 
             potholeItem.setId(id);
             potholeItem.setLatitude(latitude);
-            potholeItem.setLongtitute(longitute);
+            potholeItem.setLongtitute(longitude);
             potholeItem.setDescription(description);
             potholeItem.setDate(date);
 
@@ -73,10 +73,6 @@ public class PotHoleFetcher {
             String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
                     .buildUpon()
                     .appendQueryParameter("type","street")
-                    .appendQueryParameter("user", "rew")
-                    .appendQueryParameter("size","10")
-                    .appendQueryParameter("batch-number","0")
-                    .appendQueryParameter("end-id","15")
                     .build()
                     .toString();
 
@@ -85,7 +81,7 @@ public class PotHoleFetcher {
             JSONArray jsonBody = new JSONArray(jsonString);
             parseItems(items, jsonBody);
         } catch (IOException ioe) {
-            Log.e(TAG, "FAiled to fetch items", ioe);
+            Log.e(TAG, "Failed to fetch items", ioe);
         } catch (JSONException je) {
             Log.e(TAG,"Failed to parse JSON", je);
         }

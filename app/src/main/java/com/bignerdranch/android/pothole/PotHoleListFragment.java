@@ -17,7 +17,6 @@ import java.util.List;
 public class PotHoleListFragment extends Fragment{
     private RecyclerView mPotHoleRecycleView;
     private Button mNewReportButton;
-    private PotHoleAdapter mAdapter;
     private List<PotHole> mItems = new ArrayList<>();
 
     @Override
@@ -42,15 +41,13 @@ public class PotHoleListFragment extends Fragment{
                 startActivity(reportIntent);
             }
         });
-
-        //UI();
         return view;
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        //updateUI();
+        setupAdapter();
     }
 
     private void setupAdapter(){
@@ -90,10 +87,10 @@ public class PotHoleListFragment extends Fragment{
 
         public void bindPotHole(PotHole pothole){
             mPotHole = pothole;
-            mUid.append(mPotHole.getId());
-            mLatitude.append(mPotHole.getLatitute());
-            mLongitude.append(mPotHole.getLongitute());
-            mDate.append(mPotHole.getDate());
+            mUid.setText(getString(R.string.pothole_title_id) + mPotHole.getId());
+            mLatitude.setText(getString(R.string.pothole_title_latitude) + mPotHole.getLatitute());
+            mLongitude.setText(getString(R.string.pothole_title_longitude) + mPotHole.getLongitute());
+            mDate.setText(getString(R.string.pothole_title_date) + mPotHole.getDate());
         }
     }
 
@@ -136,20 +133,6 @@ public class PotHoleListFragment extends Fragment{
             mItems = items;
             setupAdapter();
         }
-    }
-
-    private void updateUI(){
-        PotHoleTracker potHoleTracker = PotHoleTracker.get(getActivity());
-        List<PotHole> potHoles = potHoleTracker.getPotHoles();
-
-        if(mAdapter == null){
-            mAdapter = new PotHoleAdapter(potHoles);
-            mPotHoleRecycleView.setAdapter(mAdapter);
-        } else {
-            mAdapter.notifyDataSetChanged();
-        }
-        mAdapter =  new PotHoleAdapter(potHoles);
-        mPotHoleRecycleView.setAdapter(mAdapter);
     }
 
 }
