@@ -1,13 +1,16 @@
 package com.bignerdranch.android.pothole;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,11 +19,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
 import java.io.File;
 
 public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -36,8 +43,10 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private Location mLastLocation;
     private String mLatitude;
     private String mLongitude;
+
     private LocationRequest mLocationRequest;
 
+    private int permissionCheck;
     private static final String EXTRA_POTHOLE_ID = "com.bignerdranch.android.pothole.pothole_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_ERROR = 0;
@@ -62,6 +71,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
 
         mLocationRequest = LocationRequest.create();
 
+        permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         mClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -69,15 +79,26 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                     public void onConnected(Bundle connectionHint) {
                         Log.i(TAG, "You have connected! ");
 
-                        LocationRequest accurateRequest = new LocationRequest();
-                        accurateRequest.setInterval(10000);
-                        accurateRequest.setFastestInterval(5000);
-                        accurateRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                            LocationRequest accurateRequest = new LocationRequest();
+                            accurateRequest.setInterval(3000);
+                            accurateRequest.setFastestInterval(2000);
+                            accurateRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-                        //LocationServices.FusedLocationApi.requestLocationUpdates(mClient, mLocationRequest, this);
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                                    mClient);
+                            LocationServices.FusedLocationApi.requestLocationUpdates(mClient, mLocationRequest, new LocationListener() {
+                                @Override
+                                public void onLocationChanged(Location location) {
+                                    mLatitude = String.valueOf(location.getLatitude());
+                                    mLongitude = String.valueOf(location.getLongitude());
+                                    Log.i(TAG, "You have latitude: " + mLatitude);
+                                    mLatitudeView.setText(mLatitude);
+                                    mLongitudeView.setText(mLongitude);
+                                }
+                            });
+                        }
 
-                        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                                mClient);
                         if (mLastLocation != null) {
                             mLatitude = String.valueOf(mLastLocation.getLatitude());
                             mLongitude = String.valueOf(mLastLocation.getLongitude());
@@ -85,7 +106,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                             mLatitudeView.setText(mLatitude);
                             mLongitudeView.setText(mLongitude);
                         }else {
-                            handleNewLocation(mLastLocation);
+                            Log.i(TAG, "You have to keep trying!");
                         }
                     }
 
@@ -96,13 +117,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                     @Override
                     public void onConnectionSuspended(int i) {
 
-                    }
-
-                    public void onLocationChanged(Location location) {
-                        mLatitude = String.valueOf(location.getLatitude());
-                        mLongitude = String.valueOf(location.getLongitude());
-                        mLatitudeView.setText(mLongitude);
-                        mLongitudeView.setText(mLatitude);
                     }
                 })
                 .build();
@@ -115,6 +129,17 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         });
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
 
     public String filename() {
         return "JPEG_FILE.jpg";
@@ -180,19 +205,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
 
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
 }
 
