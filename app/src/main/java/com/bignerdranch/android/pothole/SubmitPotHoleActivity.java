@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,7 +30,22 @@ import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -43,6 +60,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private Location mLastLocation;
     private String mLatitude;
     private String mLongitude;
+    private Button mSubmitButton;
 
     private LocationRequest mLocationRequest;
 
@@ -63,11 +81,20 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_pot_hole);
         mCameraButton = (ImageButton) findViewById(R.id.pothole_camera_button);
+        mSubmitButton = (Button) findViewById(R.id.submission_button);
         mImageView = (ImageView) findViewById(R.id.pothole_photo_submission);
         mLatitudeView = (TextView) findViewById(R.id.pothole_submit_latitude);
-        mLongitudeView = (TextView)findViewById(R.id.pothole_submit_longitude);
-        mDate = (TextView)findViewById(R.id.pothole_submit_date);
-        mDescription = (EditText)findViewById(R.id.pothole_submit_description);
+        mLongitudeView = (TextView) findViewById(R.id.pothole_submit_longitude);
+        mDate = (TextView) findViewById(R.id.pothole_submit_date);
+        mDescription = (EditText) findViewById(R.id.pothole_submit_description);
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendDataToServer();
+            }
+        });
 
         mLocationRequest = LocationRequest.create();
 
@@ -105,7 +132,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                             Log.i(TAG, "You have latitude: " + mLatitude);
                             mLatitudeView.setText(mLatitude);
                             mLongitudeView.setText(mLongitude);
-                        }else {
+                        } else {
                             Log.i(TAG, "You have to keep trying!");
                         }
                     }
@@ -127,6 +154,30 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                 dispatchTakePictureIntent(mCameraButton);
             }
         });
+
+        mLatitudeView.setText("777");
+        mLongitudeView.setText("888");
+        mDate.setText(currentDate);
+        mDescription.setText("Pothole near Starbucks");
+        //mId.setText("0989");
+
+    }
+
+    public void sendDataToServer() {
+        JSONObject post_dict = new JSONObject();
+        try {
+            post_dict.put("user", "0989");
+            post_dict.put("latitude", 777);
+            post_dict.put("longitude", 888);
+            post_dict.put("type", "street");
+            post_dict.put("description", mDescription.getText().toString());
+            post_dict.put("imagetype", "jpg");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (post_dict.length() > 0) {
+            new SendDataToServer().execute(String.valueOf(post_dict));
+        }
     }
 
     @Override
@@ -147,7 +198,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
 
     private File imageFile() {
         File externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if ( externalFilesDir == null ) return null;
+        if (externalFilesDir == null) return null;
         return new File(externalFilesDir, filename());
     }
 
@@ -175,12 +226,12 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
-    protected void onStart(){
+    protected void onStart() {
         mClient.connect();
         super.onStart();
     }
 
-    protected void onStop(){
+    protected void onStop() {
         mClient.disconnect();
         super.onStop();
     }
@@ -205,6 +256,14 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
+    private class SendDataToServer extends AsyncTask<String, String, String> {
 
+        @Override
+        protected String doInBackground(String... params) {
+
+            return null;
+
+        }
+    }
 }
 
