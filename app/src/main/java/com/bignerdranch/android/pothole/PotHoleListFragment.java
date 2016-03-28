@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.TextView;
 import com.android.volley.RequestQueue;
@@ -29,6 +30,7 @@ public class PotHoleListFragment extends Fragment{
     private Button mNewReportButton;
     private List<PotHole> mItems = new ArrayList<>();
     private List<PotHole> potHoleListItems;
+    private int batchIncrementer;
     private static final String TAG = "PotHoleListFragment";
 
     @Override
@@ -36,7 +38,8 @@ public class PotHoleListFragment extends Fragment{
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         //new FetchItemsTask().execute();
-        requestJsonObject();
+        requestJsonObject("0");
+        batchIncrementer = 0;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class PotHoleListFragment extends Fragment{
         mPotHoleRecycleView = (RecyclerView) view.findViewById(R.id.pothole_recyler_view);
         mPotHoleRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNewReportButton = (Button)view.findViewById(R.id.new_report_button);
-
+        final PotHoleAdapter potHoleAdapter = new PotHoleAdapter(potHoleListItems);
         mNewReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +56,42 @@ public class PotHoleListFragment extends Fragment{
                 startActivity(reportIntent);
             }
         });
+
+        mPotHoleRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    // Scrolling up
+                    Log.i(TAG, "SCrolling up!");
+                } else {
+                    // Scrolling down
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                    Log.i(TAG, "Fling!");
+                    batchIncrementer++;
+                    String conversion = Integer.toString(batchIncrementer);
+                    requestJsonObject(conversion);
+                    //potHoleAdapter.notifyDataSetChanged();
+
+                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    // Do something
+                } else {
+                    // Do something
+                }
+            }
+        });
+        if(isAdded()) {
+
+            //mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
+            mPotHoleRecycleView.setAdapter(potHoleAdapter);
+        }
         return view;
     }
 
@@ -108,16 +147,16 @@ public class PotHoleListFragment extends Fragment{
     }
 
 
-    private void requestJsonObject() {
+    private void requestJsonObject(String batchNumber) {
+        potHoleListItems = new ArrayList<>();
+
+        RequestQueue mainQueue = Volley.newRequestQueue(getContext());
         String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
                 .buildUpon()
                 .appendQueryParameter("type","street")
+                .appendQueryParameter("batch-number",batchNumber)
                 .build()
                 .toString();
-        RequestQueue mainQueue = Volley.newRequestQueue(getContext());
-        //JsonArrayRequest jsonArray = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener())
-
-        potHoleListItems = new ArrayList<>();
 
         JsonArrayRequest jsonObjReq = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
 

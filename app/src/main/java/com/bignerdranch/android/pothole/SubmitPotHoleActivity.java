@@ -91,7 +91,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         mDescription = (EditText) findViewById(R.id.pothole_submit_description);
         String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-
         mQueue = Volley.newRequestQueue(this);
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
