@@ -8,12 +8,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,31 +21,29 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -60,7 +58,10 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private Location mLastLocation;
     private String mLatitude;
     private String mLongitude;
+    private String encodedPhotoString;
     private Button mSubmitButton;
+    private RequestQueue mQueue;
+    private boolean mPhotoFlag;
 
     private LocationRequest mLocationRequest;
 
@@ -80,6 +81,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_pot_hole);
+        mPhotoFlag = false;
         mCameraButton = (ImageButton) findViewById(R.id.pothole_camera_button);
         mSubmitButton = (Button) findViewById(R.id.submission_button);
         mImageView = (ImageView) findViewById(R.id.pothole_photo_submission);
@@ -89,10 +91,47 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         mDescription = (EditText) findViewById(R.id.pothole_submit_description);
         String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
+
+        mQueue = Volley.newRequestQueue(this);
+
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendDataToServer();
+                String url = "http://bismarck.sdsu.edu/city/report";
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("type", "street");
+                    params.put("latitude", 777);
+                    params.put("longitude", 555);
+                    params.put("user", "0989");
+                    params.put("description", mDescription.getText());
+                    if(mPhotoFlag == false){
+                        params.put("imagetype", "none");
+                    } else {
+                        params.put("imagetype", "jpeg");
+                        params.put("image", encodedPhotoString);
+                    }
+                } catch (JSONException e){
+                    Log.d("SubmitPotHoleActivity", "Error", e);
+                }
+
+                JsonObjectRequest postRequest = new JsonObjectRequest(url, params,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    VolleyLog.v("Response:%n %s", response.toString(4));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.e("Error: ", error.getMessage());
+                    }
+                });
+                mQueue.add(postRequest);
             }
         });
 
@@ -160,25 +199,8 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         mDate.setText(currentDate);
         mDescription.setText("Pothole near Starbucks");
         //mId.setText("0989");
-
     }
 
-    public void sendDataToServer() {
-        JSONObject post_dict = new JSONObject();
-        try {
-            post_dict.put("user", "0989");
-            post_dict.put("latitude", 777);
-            post_dict.put("longitude", 888);
-            post_dict.put("type", "street");
-            post_dict.put("description", mDescription.getText().toString());
-            post_dict.put("imagetype", "jpg");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if (post_dict.length() > 0) {
-            new SendDataToServer().execute(String.valueOf(post_dict));
-        }
-    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -218,10 +240,29 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             File photoFile = imageFile();
             if (photoFile != null) {
+                mPhotoFlag = true;
                 Log.i("SubmitPotHoleActivity", "About to add photo");
 
                 mImageView.setImageDrawable(null);
                 mImageView.setImageURI(Uri.fromFile(imageFile()));
+                try {
+                    InputStream inputStream = new FileInputStream(photoFile);
+                    byte[] bytes;
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    try {
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            output.write(buffer, 0, bytesRead);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    bytes = output.toByteArray();
+                    encodedPhotoString = Base64.encodeToString(bytes, Base64.NO_WRAP);
+                }catch (FileNotFoundException foe){
+                    Log.i("SubmitPotHoleActivity", "Photo not found", foe);
+                }
             }
         }
     }
@@ -253,16 +294,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                             });
 
             errorDialog.show();
-        }
-    }
-
-    private class SendDataToServer extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            return null;
-
         }
     }
 }
