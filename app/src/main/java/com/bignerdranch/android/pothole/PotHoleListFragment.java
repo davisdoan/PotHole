@@ -1,16 +1,26 @@
 package com.bignerdranch.android.pothole;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +28,15 @@ public class PotHoleListFragment extends Fragment{
     private RecyclerView mPotHoleRecycleView;
     private Button mNewReportButton;
     private List<PotHole> mItems = new ArrayList<>();
+    private List<PotHole> potHoleListItems;
+    private static final String TAG = "PotHoleListFragment";
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        new FetchItemsTask().execute();
+        //new FetchItemsTask().execute();
+        requestJsonObject();
     }
 
     @Override
@@ -52,7 +64,8 @@ public class PotHoleListFragment extends Fragment{
 
     private void setupAdapter(){
         if(isAdded()) {
-            mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
+            //mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
+            mPotHoleRecycleView.setAdapter(new PotHoleAdapter(potHoleListItems));
         }
     }
 
@@ -92,6 +105,59 @@ public class PotHoleListFragment extends Fragment{
             mLongitude.setText(getString(R.string.pothole_title_longitude) + mPotHole.getLongitute());
             mDate.setText(getString(R.string.pothole_title_date) + mPotHole.getDate());
         }
+    }
+
+
+    private void requestJsonObject() {
+        String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
+                .buildUpon()
+                .appendQueryParameter("type","street")
+                .build()
+                .toString();
+        RequestQueue mainQueue = Volley.newRequestQueue(getContext());
+        //JsonArrayRequest jsonArray = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener())
+
+        potHoleListItems = new ArrayList<>();
+
+        JsonArrayRequest jsonObjReq = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray jsonBody) {
+                try {
+                    //String name = response.getString("name");
+                    for(int i = 0; i < jsonBody.length(); i++){
+                        JSONObject myJson = jsonBody.getJSONObject(i);
+                        String id = myJson.getString("id");
+                        String latitude = myJson.getString("latitude");
+                        String longitude = myJson.getString("longitude");
+                        String description = myJson.getString("description");
+                        String date = myJson.getString("created");
+
+                        Log.i(TAG, "You have from VOLLEY: " + id);
+                        Log.i(TAG, "You have from VOLLEY: " + latitude );
+
+                        PotHole potholeItem = new PotHole();
+
+                        potholeItem.setId(id);
+                        potholeItem.setLatitude(latitude);
+                        potholeItem.setLongtitute(longitude);
+                        potholeItem.setDescription(description);
+                        potholeItem.setDate(date);
+
+                        potHoleListItems.add(potholeItem);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+            });
+        mainQueue.add(jsonObjReq);
     }
 
     private class PotHoleAdapter extends RecyclerView.Adapter<PotHoleHolder>{
