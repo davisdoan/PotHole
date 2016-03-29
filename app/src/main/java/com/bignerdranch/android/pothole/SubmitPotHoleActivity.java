@@ -66,6 +66,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private LocationRequest mLocationRequest;
 
     private int permissionCheck;
+
     private static final String EXTRA_POTHOLE_ID = "com.bignerdranch.android.pothole.pothole_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_ERROR = 0;

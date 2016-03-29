@@ -1,5 +1,7 @@
 package com.bignerdranch.android.pothole;
 
+import android.graphics.Bitmap;
+
 public class PotHole {
 
     private String mId;
@@ -7,6 +9,16 @@ public class PotHole {
     private String mLongitute;
     private String mDate;
     private String mDescription;
+
+    public Bitmap getBitmap() {
+        return mBitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        mBitmap = bitmap;
+    }
+
+    private Bitmap mBitmap;
 
     public PotHole(){
     }

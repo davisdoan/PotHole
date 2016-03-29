@@ -5,7 +5,7 @@
                 android:layout_height="match_parent"
                 android:background="#93f366">
     <ImageView
-        android:id="@+id/pothole_photo"
+        android:id="@+id/list_item_pothole_photo"
         android:layout_width="95dp"
         android:layout_height="95dp"
         android:layout_marginLeft="8dp"/>

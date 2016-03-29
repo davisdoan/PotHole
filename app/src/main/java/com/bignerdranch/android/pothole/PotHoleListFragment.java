@@ -1,6 +1,9 @@
 package com.bignerdranch.android.pothole;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
@@ -32,6 +37,13 @@ public class PotHoleListFragment extends Fragment{
     private List<PotHole> potHoleListItems;
     private int batchIncrementer;
     private static final String TAG = "PotHoleListFragment";
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        RequestQueue singletonQueue = MySingleton.getInstance(getContext()).
+        getRequestQueue();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -88,7 +100,6 @@ public class PotHoleListFragment extends Fragment{
             }
         });
         if(isAdded()) {
-
             //mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
             mPotHoleRecycleView.setAdapter(potHoleAdapter);
         }
@@ -114,6 +125,7 @@ public class PotHoleListFragment extends Fragment{
         private TextView mLongitude;
         private TextView mDate;
         private PotHole mPotHole;
+        private ImageView mImageView;
 
         public PotHoleHolder(View itemView){
             super(itemView);
@@ -123,6 +135,7 @@ public class PotHoleListFragment extends Fragment{
             mLatitude = (TextView) itemView.findViewById(R.id.list_item_pothole_latitude);
             mLongitude = (TextView) itemView.findViewById(R.id.list_item_posthole_longitute);
             mDate = (TextView) itemView.findViewById(R.id.list_item_pothole_date);
+            mImageView = (ImageView)itemView.findViewById(R.id.list_item_pothole_photo);
         }
 
         @Override
@@ -143,14 +156,35 @@ public class PotHoleListFragment extends Fragment{
             mLatitude.setText(getString(R.string.pothole_title_latitude) + mPotHole.getLatitute());
             mLongitude.setText(getString(R.string.pothole_title_longitude) + mPotHole.getLongitute());
             mDate.setText(getString(R.string.pothole_title_date) + mPotHole.getDate());
+            //mImageView.setImageBitmap(mPotHole.getBitmap());
+            requestImage(mPotHole.getId(),mImageView);
+        }
+
+        private void requestImage(String postId, final ImageView imageView){
+            String id = postId;
+            String url = "http://bismarck.sdsu.edu/city/image?id=" + id;
+            ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap bitmap) {
+                    Log.i(TAG, "Downloading Image Via VOlley!");
+                    imageView.setImageBitmap(bitmap);
+                }
+            }, 0, 0, null, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.i(TAG, "No Image available via volley!");
+                    Drawable placeholder = getResources().getDrawable(R.drawable.pothole_default);
+                    imageView.setImageDrawable(placeholder);
+                }
+            });
+            VolleySingleton.getInstance().addToRequestQueue(imageRequest);
         }
     }
-
 
     private void requestJsonObject(String batchNumber) {
         potHoleListItems = new ArrayList<>();
 
-        RequestQueue mainQueue = Volley.newRequestQueue(getContext());
+        //RequestQueue mainQueue = Volley.newRequestQueue(getContext());
         String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
                 .buildUpon()
                 .appendQueryParameter("type","street")
@@ -196,7 +230,9 @@ public class PotHoleListFragment extends Fragment{
             public void onErrorResponse(VolleyError error) {
             }
             });
-        mainQueue.add(jsonObjReq);
+        // Get a RequestQueue
+        VolleySingleton.getInstance().addToRequestQueue(jsonObjReq);
+        //mainQueue.add(jsonObjReq);
     }
 
     private class PotHoleAdapter extends RecyclerView.Adapter<PotHoleHolder>{
