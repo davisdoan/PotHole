@@ -2,11 +2,13 @@ package com.bignerdranch.android.pothole;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,8 +43,6 @@ public class PotHoleListFragment extends Fragment{
     @Override
     public void onStart(){
         super.onStart();
-        RequestQueue singletonQueue = MySingleton.getInstance(getContext()).
-        getRequestQueue();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PotHoleListFragment extends Fragment{
                     Log.i(TAG, "Fling!");
                     batchIncrementer++;
                     String conversion = Integer.toString(batchIncrementer);
-                    requestJsonObject(conversion);
+                    //requestJsonObject(conversion);
                     //potHoleAdapter.notifyDataSetChanged();
 
                 } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
@@ -145,7 +145,7 @@ public class PotHoleListFragment extends Fragment{
             intent.putExtra("latitude", mPotHole.getLatitute());
             intent.putExtra("longitude", mPotHole.getLatitute());
             intent.putExtra("description", mPotHole.getDescription());
-            intent.putExtra("date",mPotHole.getDate());
+            intent.putExtra("date", mPotHole.getDate());
 
             startActivity(intent);
         }
@@ -156,7 +156,6 @@ public class PotHoleListFragment extends Fragment{
             mLatitude.setText(getString(R.string.pothole_title_latitude) + mPotHole.getLatitute());
             mLongitude.setText(getString(R.string.pothole_title_longitude) + mPotHole.getLongitute());
             mDate.setText(getString(R.string.pothole_title_date) + mPotHole.getDate());
-            //mImageView.setImageBitmap(mPotHole.getBitmap());
             requestImage(mPotHole.getId(),mImageView);
         }
 
@@ -182,9 +181,8 @@ public class PotHoleListFragment extends Fragment{
     }
 
     private void requestJsonObject(String batchNumber) {
-        potHoleListItems = new ArrayList<>();
 
-        //RequestQueue mainQueue = Volley.newRequestQueue(getContext());
+        potHoleListItems = new ArrayList<>();
         String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
                 .buildUpon()
                 .appendQueryParameter("type","street")
@@ -197,7 +195,6 @@ public class PotHoleListFragment extends Fragment{
             @Override
             public void onResponse(JSONArray jsonBody) {
                 try {
-                    //String name = response.getString("name");
                     for(int i = 0; i < jsonBody.length(); i++){
                         JSONObject myJson = jsonBody.getJSONObject(i);
                         String id = myJson.getString("id");
@@ -225,14 +222,12 @@ public class PotHoleListFragment extends Fragment{
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
             }
             });
-        // Get a RequestQueue
         VolleySingleton.getInstance().addToRequestQueue(jsonObjReq);
-        //mainQueue.add(jsonObjReq);
+
     }
 
     private class PotHoleAdapter extends RecyclerView.Adapter<PotHoleHolder>{

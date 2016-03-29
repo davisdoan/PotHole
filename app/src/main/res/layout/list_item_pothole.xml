@@ -6,9 +6,10 @@
                 android:background="#93f366">
     <ImageView
         android:id="@+id/list_item_pothole_photo"
-        android:layout_width="95dp"
-        android:layout_height="95dp"
-        android:layout_marginLeft="8dp"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="8dp"
+        android:background="#838080"/>
 
     <TextView
         android:id="@+id/list_item_pothole_date"
@@ -17,31 +18,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:layout_toRightOf="@id/pothole_photo"
+        android:layout_toRightOf="@+id/list_item_pothole_photo"
         android:layout_alignParentRight="true"
         android:text="Date: "
+
         />
 
     <TextView
         android:id="@+id/list_item_pothole_userid"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="25dp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:layout_below="@id/list_item_pothole_date"
-        android:layout_toRightOf="@id/pothole_photo"
+        android:layout_toRightOf="@+id/list_item_pothole_photo"
+
         android:text="User Id: "
-        />
+        android:layout_below="@+id/list_item_pothole_date"/>
 
     <TextView
         android:id="@+id/list_item_pothole_latitude"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="25dp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:layout_toRightOf="@id/pothole_photo"
+        android:layout_toRightOf="@+id/list_item_pothole_photo"
         android:layout_below="@id/list_item_pothole_userid"
         android:text="Latitude: "
         />
@@ -49,10 +51,10 @@
         android:id="@+id/list_item_posthole_longitute"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="25dp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:layout_toRightOf="@id/pothole_photo"
+        android:layout_toRightOf="@+id/list_item_pothole_photo"
         android:layout_below="@id/list_item_pothole_latitude"
         android:text="Longitude: "
         />

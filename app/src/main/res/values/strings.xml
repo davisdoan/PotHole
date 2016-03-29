@@ -7,4 +7,5 @@
     <string name="pothole_title_longitude">Longitude:  </string>
     <string name="pothole_title_date">Date:  </string>
     <string name="pothole_submit_new">Submit</string>
+    <string name="pothole_new_report">Submit New Pothole</string>
 </resources>

@@ -20,16 +20,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PotHoleListActivity">
+        <activity android:name=".PotHoleListActivity"
+                  android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".SubmitPotHoleActivity">
+        <activity android:name=".SubmitPotHoleActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".PotHoleDetails">
+        <activity android:name=".PotHoleDetails"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 
