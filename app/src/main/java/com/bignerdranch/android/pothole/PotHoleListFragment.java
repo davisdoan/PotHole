@@ -50,7 +50,8 @@ public class PotHoleListFragment extends Fragment{
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         //new FetchItemsTask().execute();
-        requestJsonObject("0");
+        potHoleListItems = new ArrayList<>();
+        requestJsonObject(potHoleListItems, "0");
         batchIncrementer = 0;
     }
 
@@ -89,8 +90,8 @@ public class PotHoleListFragment extends Fragment{
                     Log.i(TAG, "Fling!");
                     batchIncrementer++;
                     String conversion = Integer.toString(batchIncrementer);
-                    //requestJsonObject(conversion);
-                    //potHoleAdapter.notifyDataSetChanged();
+                    requestJsonObject(potHoleListItems,conversion);
+                    potHoleAdapter.notifyDataSetChanged();
 
                 } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     // Do something
@@ -180,9 +181,10 @@ public class PotHoleListFragment extends Fragment{
         }
     }
 
-    private void requestJsonObject(String batchNumber) {
+    private void requestJsonObject(List<PotHole> arrayList, String batchNumber) {
 
-        potHoleListItems = new ArrayList<>();
+        final List<PotHole> currList = arrayList;
+
         String url = Uri.parse("http://bismarck.sdsu.edu/city/batch")
                 .buildUpon()
                 .appendQueryParameter("type","street")
@@ -214,7 +216,7 @@ public class PotHoleListFragment extends Fragment{
                         potholeItem.setDescription(description);
                         potholeItem.setDate(date);
 
-                        potHoleListItems.add(potholeItem);
+                        currList.add(potholeItem);
                     }
 
                 } catch (JSONException e) {
@@ -227,7 +229,6 @@ public class PotHoleListFragment extends Fragment{
             }
             });
         VolleySingleton.getInstance().addToRequestQueue(jsonObjReq);
-
     }
 
     private class PotHoleAdapter extends RecyclerView.Adapter<PotHoleHolder>{

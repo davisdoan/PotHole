@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -21,6 +23,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -60,12 +64,13 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private String mLongitude;
     private String encodedPhotoString;
     private Button mSubmitButton;
-    private RequestQueue mQueue;
     private boolean mPhotoFlag;
-
     private LocationRequest mLocationRequest;
-
     private int permissionCheck;
+    private LocationManager locationManager ;
+    private String provider;
+    private double currentLatitude;
+    private double currentLongitude;
 
     private static final String EXTRA_POTHOLE_ID = "com.bignerdranch.android.pothole.pothole_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -92,7 +97,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         mDescription = (EditText) findViewById(R.id.pothole_submit_description);
         String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-        mQueue = Volley.newRequestQueue(this);
+
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,9 +136,52 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                         VolleyLog.e("Error: ", error.getMessage());
                     }
                 });
-                mQueue.add(postRequest);
+                VolleySingleton.getInstance().addToRequestQueue(postRequest);
             }
         });
+
+        /**
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            Log.d("SubmitPotHoleActivity", "Getting Location!");
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            currentLongitude = location.getLongitude();
+            currentLatitude = location.getLatitude();
+            String longitudeConverstion = String.valueOf(currentLongitude);
+            String latitudeConversion = String.valueOf(currentLatitude);
+            mLatitudeView.setText(latitudeConversion);
+            mLongitudeView.setText(longitudeConverstion);
+
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new android.location.LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d("SubmitPotHoleActivity", "Location Changed");
+                    currentLongitude = location.getLongitude();
+                    currentLatitude = location.getLatitude();
+                    String longitudeConverstion = String.valueOf(currentLongitude);
+                    String latitudeConversion = String.valueOf(currentLatitude);
+                    mLatitudeView.setText(latitudeConversion);
+                    mLongitudeView.setText(longitudeConverstion);
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
+        }
+         **/
 
         mLocationRequest = LocationRequest.create();
 
@@ -199,8 +247,13 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         mDate.setText(currentDate);
         mDescription.setText("Pothole near Starbucks");
         //mId.setText("0989");
+
     }
 
+    public void onLocationChanged(Location location) {
+        // Getting reference to TextView tv_longitude
+
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
