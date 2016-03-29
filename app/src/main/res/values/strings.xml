@@ -5,7 +5,7 @@
     <string name="pothole_title_id">Post ID:&#x20;</string>
     <string name="pothole_title_latitude">Latitude:&#x20;</string>
     <string name="pothole_title_longitude">Longitude:&#x20;</string>
-    <string name="pothole_title_date">Date:&#x20;</string>
+    <string name="pothole_title_date">Date:&#032;</string>
     <string name="pothole_submit_new">Submit</string>
     <string name="pothole_new_report">Submit New Pothole</string>
 </resources>

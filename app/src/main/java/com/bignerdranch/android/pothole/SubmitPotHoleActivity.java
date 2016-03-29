@@ -2,13 +2,10 @@ package com.bignerdranch.android.pothole;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -23,14 +20,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,11 +60,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private boolean mPhotoFlag;
     private LocationRequest mLocationRequest;
     private int permissionCheck;
-    private LocationManager locationManager ;
-    private String provider;
-    private double currentLatitude;
-    private double currentLongitude;
-    private static final String EXTRA_POTHOLE_ID = "com.bignerdranch.android.pothole.pothole_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_ERROR = 0;
     private static final String TAG = "SubmitPotHoleActivity";
@@ -132,49 +120,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
             }
         });
 
-        /**
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            Log.d("SubmitPotHoleActivity", "Getting Location!");
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            currentLongitude = location.getLongitude();
-            currentLatitude = location.getLatitude();
-            String longitudeConverstion = String.valueOf(currentLongitude);
-            String latitudeConversion = String.valueOf(currentLatitude);
-            mLatitudeView.setText(latitudeConversion);
-            mLongitudeView.setText(longitudeConverstion);
-
-
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new android.location.LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Log.d("SubmitPotHoleActivity", "Location Changed");
-                    currentLongitude = location.getLongitude();
-                    currentLatitude = location.getLatitude();
-                    String longitudeConverstion = String.valueOf(currentLongitude);
-                    String latitudeConversion = String.valueOf(currentLatitude);
-                    mLatitudeView.setText(latitudeConversion);
-                    mLongitudeView.setText(longitudeConverstion);
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-        }
-         **/
-
         mLocationRequest = LocationRequest.create();
 
         permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -233,8 +178,8 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
             }
         });
 
-        mLatitudeView.setText("777"); // latitude does not work
-        mLongitudeView.setText("888"); // longitude does not work
+        mLatitudeView.setText("777"); // latitude does not work, so i set to dummy values
+        mLongitudeView.setText("888"); // longitude does not work, so i set to dummy values
         mDate.setText(currentDate);
     }
 
