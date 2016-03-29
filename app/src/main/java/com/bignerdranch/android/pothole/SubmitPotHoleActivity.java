@@ -71,17 +71,11 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private String provider;
     private double currentLatitude;
     private double currentLongitude;
-
     private static final String EXTRA_POTHOLE_ID = "com.bignerdranch.android.pothole.pothole_id";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_ERROR = 0;
     private static final String TAG = "SubmitPotHoleActivity";
 
-    public static Intent newIntent(Context packageContext, String potholeId) {
-        Intent intent = new Intent(packageContext, SubmitPotHoleActivity.class);
-        intent.putExtra(EXTRA_POTHOLE_ID, potholeId);
-        return intent;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +90,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
         mDate = (TextView) findViewById(R.id.pothole_submit_date);
         mDescription = (EditText) findViewById(R.id.pothole_submit_description);
         String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,7 +222,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
 
                     @Override
                     public void onConnectionSuspended(int i) {
-
                     }
                 })
                 .build();
@@ -242,17 +233,9 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
             }
         });
 
-        mLatitudeView.setText("777");
-        mLongitudeView.setText("888");
+        mLatitudeView.setText("777"); // latitude does not work
+        mLongitudeView.setText("888"); // longitude does not work
         mDate.setText(currentDate);
-        mDescription.setText("Pothole near Starbucks");
-        //mId.setText("0989");
-
-    }
-
-    public void onLocationChanged(Location location) {
-        // Getting reference to TextView tv_longitude
-
     }
 
     @Override

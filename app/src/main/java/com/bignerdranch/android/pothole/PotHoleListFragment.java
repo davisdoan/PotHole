@@ -2,13 +2,12 @@ package com.bignerdranch.android.pothole;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +19,12 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.android.volley.RequestQueue;
+import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,10 +48,17 @@ public class PotHoleListFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        //new FetchItemsTask().execute();
         potHoleListItems = new ArrayList<>();
-        requestJsonObject(potHoleListItems, "0");
-        batchIncrementer = 0;
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i(TAG, "You have internet connection, downloading your stuff!");
+            requestJsonObject(potHoleListItems, "0");
+            batchIncrementer = 0;
+        } else {
+            Toast.makeText(getContext(), "Error No Internet Connection!", Toast.LENGTH_LONG).show();
+            Log.i(TAG, "ERROR No Internet Connection!");
+        }
     }
 
     @Override
@@ -66,6 +72,7 @@ public class PotHoleListFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent reportIntent = new Intent(getActivity(), SubmitPotHoleActivity.class);
+                VolleySingleton.getInstance().cancelPendingRequests(TAG);
                 startActivity(reportIntent);
             }
         });
@@ -75,10 +82,10 @@ public class PotHoleListFragment extends Fragment{
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
-                    // Scrolling up
+                    // Scroll up
                     Log.i(TAG, "SCrolling up!");
                 } else {
-                    // Scrolling down
+                    // Scroll down
                 }
             }
 
@@ -90,18 +97,15 @@ public class PotHoleListFragment extends Fragment{
                     Log.i(TAG, "Fling!");
                     batchIncrementer++;
                     String conversion = Integer.toString(batchIncrementer);
-                    requestJsonObject(potHoleListItems,conversion);
+                    requestJsonObject(potHoleListItems, conversion);
                     potHoleAdapter.notifyDataSetChanged();
 
                 } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    // Do something
                 } else {
-                    // Do something
                 }
             }
         });
         if(isAdded()) {
-            //mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
             mPotHoleRecycleView.setAdapter(potHoleAdapter);
         }
         return view;
@@ -115,7 +119,6 @@ public class PotHoleListFragment extends Fragment{
 
     private void setupAdapter(){
         if(isAdded()) {
-            //mPotHoleRecycleView.setAdapter(new PotHoleAdapter(mItems));
             mPotHoleRecycleView.setAdapter(new PotHoleAdapter(potHoleListItems));
         }
     }
@@ -147,7 +150,7 @@ public class PotHoleListFragment extends Fragment{
             intent.putExtra("longitude", mPotHole.getLatitute());
             intent.putExtra("description", mPotHole.getDescription());
             intent.putExtra("date", mPotHole.getDate());
-
+            VolleySingleton.getInstance().cancelPendingRequests(TAG);
             startActivity(intent);
         }
 
@@ -157,7 +160,7 @@ public class PotHoleListFragment extends Fragment{
             mLatitude.setText(getString(R.string.pothole_title_latitude) + mPotHole.getLatitute());
             mLongitude.setText(getString(R.string.pothole_title_longitude) + mPotHole.getLongitute());
             mDate.setText(getString(R.string.pothole_title_date) + mPotHole.getDate());
-            requestImage(mPotHole.getId(),mImageView);
+            requestImage(mPotHole.getId(), mImageView);
         }
 
         private void requestImage(String postId, final ImageView imageView){
@@ -205,17 +208,12 @@ public class PotHoleListFragment extends Fragment{
                         String description = myJson.getString("description");
                         String date = myJson.getString("created");
 
-                        Log.i(TAG, "You have from VOLLEY: " + id);
-                        Log.i(TAG, "You have from VOLLEY: " + latitude );
-
                         PotHole potholeItem = new PotHole();
-
                         potholeItem.setId(id);
                         potholeItem.setLatitude(latitude);
                         potholeItem.setLongtitute(longitude);
                         potholeItem.setDescription(description);
                         potholeItem.setDate(date);
-
                         currList.add(potholeItem);
                     }
 
@@ -257,19 +255,4 @@ public class PotHoleListFragment extends Fragment{
             return mPotHoles.size();
         }
     }
-
-    private class FetchItemsTask extends AsyncTask<Void,Void,List<PotHole>>{
-
-        @Override
-        protected List<PotHole> doInBackground(Void... params) {
-            return new PotHoleFetcher().fetchItems();
-        }
-
-        @Override
-        protected void onPostExecute(List<PotHole> items){
-            mItems = items;
-            setupAdapter();
-        }
-    }
-
 }

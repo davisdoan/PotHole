@@ -10,13 +10,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 public class VolleySingleton extends Application {
-
     public static final String TAG = VolleySingleton.class.getSimpleName();
-
     private RequestQueue mRequestQueue;
-
     private static VolleySingleton mInstance;
-
     private static Context mCtx;
 
     @Override
@@ -33,7 +29,6 @@ public class VolleySingleton extends Application {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-
         return mRequestQueue;
     }
 

@@ -19,8 +19,8 @@
         >
 
         <ImageView android:id="@+id/detail_pothole_photo"
-                   android:layout_width="280dp"
-                   android:layout_height="280dp"
+                   android:layout_width="240dp"
+                   android:layout_height="240dp"
                    android:scaleType="centerInside"
                    android:background="@android:color/darker_gray"
                    android:cropToPadding="true"/>
@@ -65,7 +65,7 @@
 
         <EditText android:id="@+id/detail_description"
                   android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
+                  android:layout_height="86dp"
                   android:hint="@string/pothole_title_description_hint"
                   />
 

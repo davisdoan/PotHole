@@ -1,13 +1,17 @@
 package com.bignerdranch.android.pothole;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -47,7 +51,17 @@ public class PotHoleDetails extends AppCompatActivity {
         mLongitude.setText(getString(R.string.pothole_title_latitude) + longitude);
         mLatitude.setText(getString(R.string.pothole_title_latitude) + latitude);
         mDescription.setText(description);
-        requestImage(userId, mImageView);
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i(TAG, "You have internet connection, downloading your stuff!");
+            requestImage(userId, mImageView);
+        } else {
+            // display error
+            Toast.makeText(this, "Error No Internet Connection!", Toast.LENGTH_LONG).show();
+            Log.i(TAG, "ERROR No Internet Connection!");
+        }
+
     }
 
     private void requestImage(String postId, final ImageView imageView){
