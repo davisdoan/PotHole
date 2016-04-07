@@ -1,5 +1,6 @@
 package com.bignerdranch.android.pothole;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +21,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
@@ -34,10 +34,27 @@ import java.util.List;
 public class PotHoleListFragment extends Fragment{
     private RecyclerView mPotHoleRecycleView;
     private Button mNewReportButton;
-    private List<PotHole> mItems = new ArrayList<>();
     private List<PotHole> potHoleListItems;
     private int batchIncrementer;
     private static final String TAG = "PotHoleListFragment";
+    private Callbacks mCallbacks;
+
+
+    public interface Callbacks {
+        void onPotholeSelected(PotHole potHole);
+    }
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public  void onDetach(){
+        super.onDetach();
+        mCallbacks = null;
+    }
 
     @Override
     public void onStart(){
@@ -151,15 +168,16 @@ public class PotHoleListFragment extends Fragment{
             intent.putExtra("description", mPotHole.getDescription());
             intent.putExtra("date", mPotHole.getDate());
             VolleySingleton.getInstance().cancelPendingRequests(TAG);
-            startActivity(intent);
+            //startActivity(intent);
+            mCallbacks.onPotholeSelected(mPotHole);
         }
 
         public void bindPotHole(PotHole pothole){
             mPotHole = pothole;
-            mUid.setText(getString(R.string.pothole_title_id) + mPotHole.getId());
-            mLatitude.setText(getString(R.string.pothole_title_latitude) + mPotHole.getLatitute());
-            mLongitude.setText(getString(R.string.pothole_title_longitude) + mPotHole.getLongitute());
-            mDate.setText(getString(R.string.pothole_title_date) + mPotHole.getDate());
+            mUid.setText(getString(R.string.pothole_title_id) + " " + mPotHole.getId());
+            mLatitude.setText(getString(R.string.pothole_title_latitude) + " " + mPotHole.getLatitute());
+            mLongitude.setText(getString(R.string.pothole_title_longitude) + " " + mPotHole.getLongitute());
+            mDate.setText(getString(R.string.pothole_title_date) + " " + mPotHole.getDate());
             requestImage(mPotHole.getId(), mImageView);
         }
 

@@ -1,6 +1,7 @@
 package com.bignerdranch.android.pothole;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -17,6 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 
+import java.util.UUID;
+
 public class PotHoleDetails extends AppCompatActivity {
 
     TextView mId;
@@ -26,8 +29,24 @@ public class PotHoleDetails extends AppCompatActivity {
     TextView mDescription;
     ImageView mImageView;
     private static final String TAG = "PotHoleDetails";
+    private static final String ARG_POTHOLE_ID = "pothole_id";
 
-    @Override
+    public static Intent newIntent(Context packageContext, String potholeId) {
+        Intent intent = new Intent(packageContext, PotHoleDetails.class);
+        intent.putExtra("mId", potholeId);
+        return intent;
+    }
+
+    public static PotHoleDetails newInstance(String potholeId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_POTHOLE_ID, potholeId);
+
+        PotHoleDetails fragment = new PotHoleDetails();
+        //fragment.setArguments(args);
+        return fragment;
+    }
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pot_hole_details);

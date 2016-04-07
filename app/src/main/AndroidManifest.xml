@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PotHoleListActivity"
-                  android:screenOrientation="portrait">
+                  >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -29,10 +29,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".SubmitPotHoleActivity"
-                  android:screenOrientation="portrait">
+                  >
         </activity>
         <activity android:name=".PotHoleDetails"
-                  android:screenOrientation="portrait">
+                  >
         </activity>
     </application>
 

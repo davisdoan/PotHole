@@ -41,7 +41,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private ImageButton mCameraButton;
@@ -117,6 +116,7 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
                     }
                 });
                 VolleySingleton.getInstance().addToRequestQueue(postRequest);
+                finish();
             }
         });
 
@@ -178,8 +178,8 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
             }
         });
 
-        mLatitudeView.setText("777"); // latitude does not work, so i set to dummy values
-        mLongitudeView.setText("888"); // longitude does not work, so i set to dummy values
+        mLatitudeView.setText("32.7152778"); // latitude does not work, so i set to dummy values
+        mLongitudeView.setText("-117.1563889"); // longitude does not work, so i set to dummy values
         mDate.setText(currentDate);
     }
 
