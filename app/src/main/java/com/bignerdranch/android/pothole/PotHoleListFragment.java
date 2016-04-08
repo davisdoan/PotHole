@@ -125,6 +125,7 @@ public class PotHoleListFragment extends Fragment{
         if(isAdded()) {
             mPotHoleRecycleView.setAdapter(potHoleAdapter);
         }
+        mPotHoleRecycleView.setAdapter(potHoleAdapter);
         return view;
     }
 
@@ -161,6 +162,7 @@ public class PotHoleListFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
+            /**
             Intent intent = new Intent(getActivity(), PotHoleDetails.class);
             intent.putExtra("id", mPotHole.getId());
             intent.putExtra("latitude", mPotHole.getLatitute());
@@ -169,6 +171,7 @@ public class PotHoleListFragment extends Fragment{
             intent.putExtra("date", mPotHole.getDate());
             VolleySingleton.getInstance().cancelPendingRequests(TAG);
             //startActivity(intent);
+             **/
             mCallbacks.onPotholeSelected(mPotHole);
         }
 
