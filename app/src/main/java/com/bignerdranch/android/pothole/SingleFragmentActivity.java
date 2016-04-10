@@ -5,9 +5,6 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-/**
- * Created by Davis on 2/17/2016.
- */
 public abstract class SingleFragmentActivity extends FragmentActivity {
     
     protected abstract android.support.v4.app.Fragment createFragment();

@@ -63,7 +63,6 @@ public class SubmitPotHoleActivity extends AppCompatActivity implements GoogleAp
     private static final int REQUEST_ERROR = 0;
     private static final String TAG = "SubmitPotHoleActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

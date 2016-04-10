@@ -40,7 +40,6 @@ public class PotHoleListFragment extends Fragment{
     private Callbacks mCallbacks;
     PotHoleAdapter potHoleAdapter;
 
-
     public interface Callbacks {
         void onPotholeSelected(PotHole potHole);
     }
@@ -60,12 +59,8 @@ public class PotHoleListFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
         View view = inflater.inflate(R.layout.fragment_pothole_list, container, false);
-
-
         potHoleListItems = new ArrayList<>();
 
-
-        mNewReportButton = (Button)view.findViewById(R.id.new_report_button);
 
         ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -78,6 +73,8 @@ public class PotHoleListFragment extends Fragment{
             Log.i(TAG, "ERROR No Internet Connection!");
         }
 
+        /**
+         mNewReportButton = (Button)view.findViewById(R.id.new_report_button);
         mNewReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +83,8 @@ public class PotHoleListFragment extends Fragment{
                 startActivity(reportIntent);
             }
         });
+         **/
+
         mPotHoleRecycleView = (RecyclerView) view.findViewById(R.id.pothole_recyler_view);
         mPotHoleRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         potHoleAdapter = new PotHoleAdapter(potHoleListItems);
@@ -111,6 +110,7 @@ public class PotHoleListFragment extends Fragment{
                     Log.i(TAG, "Fling!");
                     batchIncrementer++;
                     String conversion = Integer.toString(batchIncrementer);
+                    VolleySingleton.getInstance().cancelPendingRequests(TAG);
                     requestJsonObject(potHoleListItems, conversion);
                     potHoleAdapter.notifyDataSetChanged();
 
@@ -126,31 +126,18 @@ public class PotHoleListFragment extends Fragment{
     public void onStart(){
         super.onStart();
         Log.i(TAG, "inside onStart");
-        //setupAdapter();
         updateUI();
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.i(TAG, "inside onResume");
-        //setupAdapter();
-        //updateUI();
     }
 
     @Override
     public  void onDetach(){
         super.onDetach();
         mCallbacks = null;
-    }
-
-    private void setupAdapter(){
-        Log.i(TAG, "inside setup adapter");
-        if(isAdded()) {
-            Log.i(TAG, "fragment is added, heres the view!");
-            mPotHoleRecycleView.setAdapter(new PotHoleAdapter(potHoleListItems));
-        }
-        Log.i(TAG, "fragment was not added, exiting");
     }
 
     private void updateUI(){
@@ -160,7 +147,6 @@ public class PotHoleListFragment extends Fragment{
             mPotHoleRecycleView.setAdapter(potHoleAdapter);
         } else{
             Log.i(TAG, "There is an adapter, but i am notifying the data has changed");
-            //mPotHoleRecycleView.setAdapter(new PotHoleAdapter(potHoleListItems));
             potHoleAdapter.notifyDataSetChanged();
         }
     }
@@ -186,6 +172,7 @@ public class PotHoleListFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
+            VolleySingleton.getInstance().cancelPendingRequests(TAG);
             mCallbacks.onPotholeSelected(mPotHole);
         }
 
@@ -280,10 +267,6 @@ public class PotHoleListFragment extends Fragment{
             View view = layoutInflater.inflate(R.layout.list_item_pothole, parent, false);
 
             return new PotHoleHolder(view);
-        }
-
-        public void setPotHoles(List<PotHole> potHole){
-            mPotHoles = potHole;
         }
 
         @Override

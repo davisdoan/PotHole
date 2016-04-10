@@ -28,19 +28,12 @@ public class PotHoleDetailFragment extends Fragment{
     TextView mDate;
     TextView mDescription;
     ImageView mImageView;
-    private static final String TAG = "PotHoleDetails";
+    private static final String TAG = "PotHoleDetailsFrag,emt";
     private static final String ARG_POTHOLE_ID = "pothole_id";
     private static final String ARG_POTHOLE_LATITUDE = "pothole_latitude";
     private static final String ARG_POTHOLE_LONGITUDE = "pothole_longitude";
     private static final String ARG_POTHOLE_DATE = "pothole_date";
     private static final String ARG_POTHOLE_DESCRIPTION = "pothole_description";
-
-
-    public static Intent newIntent(Context packageContext, String potholeId) {
-        Intent intent = new Intent(packageContext, PotHoleDetails.class);
-        intent.putExtra("mId", potholeId);
-        return intent;
-    }
 
     public static PotHoleDetailFragment newInstance(PotHole pothole) {
         Bundle args = new Bundle();
@@ -69,7 +62,7 @@ public class PotHoleDetailFragment extends Fragment{
         mLatitude = (TextView) view.findViewById(R.id.detail_latitude);
         mLongitude = (TextView) view.findViewById(R.id.detail_longitude);
         mDate = (TextView) view.findViewById(R.id.detail_date);
-        mDescription = (EditText) view.findViewById(R.id.detail_description);
+        mDescription = (TextView) view.findViewById(R.id.detail_description);
         mImageView = (ImageView) view.findViewById(R.id.detail_pothole_photo);
 
         String potholeId = getArguments().getString(ARG_POTHOLE_ID);
@@ -110,8 +103,10 @@ public class PotHoleDetailFragment extends Fragment{
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.i(TAG, "No Image available via volley!");
-                Drawable placeholder = getResources().getDrawable(R.drawable.pothole_default);
-                imageView.setImageDrawable(placeholder);
+                if(isAdded()) {
+                    Drawable placeholder = getResources().getDrawable(R.drawable.pothole_default);
+                    imageView.setImageDrawable(placeholder);
+                }
             }
         });
         VolleySingleton.getInstance().addToRequestQueue(imageRequest);

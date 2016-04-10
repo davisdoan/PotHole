@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="16dp"
-              android:layout_marginRight="16dp"
-              android:layout_marginBottom="16dp"
-              android:layout_marginTop="16dp"
 
-    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
+    android:layout_marginTop="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView android:id="@+id/detail_pothole_photo"
+               android:layout_width="213dp"
+               android:layout_height="213dp"
+               android:scaleType="centerInside"
+               android:background="@android:color/darker_gray"
+               android:cropToPadding="true"
+               android:layout_gravity="left|top"
+               android:layout_marginTop="25dp"
+               android:layout_marginLeft="15dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
+        android:layout_toRightOf="@id/detail_pothole_photo"
         android:layout_gravity="center"
         android:gravity="center"
-        >
 
-        <ImageView android:id="@+id/detail_pothole_photo"
-                   android:layout_width="240dp"
-                   android:layout_height="240dp"
-                   android:scaleType="centerInside"
-                   android:background="@android:color/darker_gray"
-                   android:cropToPadding="true"/>
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp">
+
         <TextView
             android:id="@+id/detail_id"
             android:layout_width="match_parent"
@@ -73,4 +80,6 @@
                   android:layout_marginTop="10dp"/>
 
     </LinearLayout>
-</LinearLayout>
+
+
+</RelativeLayout>
