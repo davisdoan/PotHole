@@ -85,6 +85,7 @@ public class PotHoleListFragment extends Fragment{
         mPotHoleRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNewReportButton = (Button)view.findViewById(R.id.new_report_button);
         final PotHoleAdapter potHoleAdapter = new PotHoleAdapter(potHoleListItems);
+
         mNewReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,6 +94,8 @@ public class PotHoleListFragment extends Fragment{
                 startActivity(reportIntent);
             }
         });
+
+        setupAdapter();
 
         mPotHoleRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -122,10 +125,6 @@ public class PotHoleListFragment extends Fragment{
                 }
             }
         });
-        if(isAdded()) {
-            mPotHoleRecycleView.setAdapter(potHoleAdapter);
-        }
-        mPotHoleRecycleView.setAdapter(potHoleAdapter);
         return view;
     }
 
@@ -162,16 +161,6 @@ public class PotHoleListFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
-            /**
-            Intent intent = new Intent(getActivity(), PotHoleDetails.class);
-            intent.putExtra("id", mPotHole.getId());
-            intent.putExtra("latitude", mPotHole.getLatitute());
-            intent.putExtra("longitude", mPotHole.getLatitute());
-            intent.putExtra("description", mPotHole.getDescription());
-            intent.putExtra("date", mPotHole.getDate());
-            VolleySingleton.getInstance().cancelPendingRequests(TAG);
-            //startActivity(intent);
-             **/
             mCallbacks.onPotholeSelected(mPotHole);
         }
 
